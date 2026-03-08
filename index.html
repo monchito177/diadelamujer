@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feliz Día de la Mujer, Ana María 💜</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lora:ital,wght@0,300;0,400;1,300;1,400&family=Great+Vibes&family=Cinzel:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --lila-1: #2e0d4e;
+      --lila-2: #4e1d7a;
+      --lila-3: #7c3fa8;
+      --lila-4: #b06fd4;
+      --lila-5: #d4a8eb;
+      --lila-6: #f0ddf9;
+      --rosa: #d4608a;
+      --rosa-claro: #f0a8c8;
+      --dorado: #e2c97e;
+      --dorado-claro: #f5e4a8;
+      --crema: #fdf8f2;
+      --violeta-neon: #c44dff;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Lora', serif;
+      background: var(--lila-1);
+      min-height: 100vh;
+      overflow: hidden;
+      cursor: default;
+    }
+    #canvas-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ===== PANTALLA 1 ===== */
+    #screen-welcome {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      transition: opacity 1.4s cubic-bezier(0.4,0,0.2,1), transform 1.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    #screen-welcome.exit {
+      opacity: 0;
+      transform: scale(1.06) translateY(-20px);
+      pointer-events: none;
+    }
+    .welcome-band {
+      position: absolute;
+      top: 0; left: -20%;
+      width: 140%;
+      height: 55%;
+      background: linear-gradient(150deg, rgba(196,77,255,0.08) 0%, rgba(124,63,168,0.12) 60%, transparent 100%);
+      transform: skewY(-6deg);
+      pointer-events: none;
+    }
+    .orbe {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+    }
+    .orbe-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(196,77,255,0.25) 0%, transparent 70%);
+      top: -150px; right: -150px;
+    }
+    .orbe-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(212,96,138,0.2) 0%, transparent 70%);
+      bottom: -100px; left: -100px;
+    }
+    .welcome-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(196,77,255,0.12);
+      border: 1px solid rgba(196,77,255,0.3);
+      border-radius: 50px;
+      padding: 0.45rem 1.2rem;
+      margin-bottom: 1.8rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      color: var(--lila-5);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--violeta-neon);
+      border-radius: 50%;
+      animation: blink 1.5s ease infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.2;} }
+    .welcome-fecha {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.65rem, 1.6vw, 0.82rem);
+      letter-spacing: 0.45em;
+      color: var(--dorado);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.5s forwards;
+    }
+    .welcome-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5.5vw, 4.8rem);
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      line-height: 1.12;
+      margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.8s forwards;
+      text-shadow: 0 0 80px rgba(196,77,255,0.4);
+    }
+    .welcome-titulo em {
+      font-style: italic;
+      color: var(--dorado);
+      display: block;
+    }
+    .welcome-nombre {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(3rem, 9vw, 7rem);
+      color: var(--lila-5);
+      text-align: center;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 1.1s forwards;
+      filter: drop-shadow(0 0 30px rgba(196,77,255,0.5));
+    }
+    .welcome-subtitulo {
+      font-family: 'Lora', serif;
+      font-size: clamp(0.88rem, 2vw, 1.08rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--rosa-claro);
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 1.4s forwards;
+      margin-bottom: 3rem;
+    }
+    .linea-deco {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 1.6s forwards;
+    }
+    .linea-deco::before, .linea-deco::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--dorado), transparent);
+      max-width: 120px;
+    }
+    .btn-abrir {
+      position: relative;
+      font-family: 'Cinzel', serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--lila-1);
+      background: linear-gradient(135deg, var(--dorado-claro) 0%, var(--dorado) 50%, var(--dorado-claro) 100%);
+      background-size: 200% 100%;
+      border: none;
+      padding: 1.1rem 3.5rem;
+      border-radius: 60px;
+      cursor: pointer;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 1.9s forwards;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 8px 40px rgba(226,201,126,0.35), 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .btn-abrir::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+    .btn-abrir:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(226,201,126,0.5); }
+    .btn-abrir:hover::after { transform: translateX(100%); }
+    .corner-deco {
+      position: absolute;
+      font-size: 2.5rem;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+    .corner-deco.tl { top:1.5rem; left:1.5rem; transform:rotate(-20deg); }
+    .corner-deco.tr { top:1.5rem; right:1.5rem; transform:rotate(20deg); }
+    .corner-deco.bl { bottom:1.5rem; left:1.5rem; transform:rotate(15deg); }
+    .corner-deco.br { bottom:1.5rem; right:1.5rem; transform:rotate(-15deg); }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ===== PANTALLA 2: SOBRE ===== */
+    #screen-envelope {
+      position: fixed;
+      inset: 0;
+      z-index: 9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+    #screen-envelope.active { opacity:1; pointer-events:all; }
+    .env-label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.4em;
+      color: var(--lila-5);
+      text-transform: uppercase;
+      opacity: 0.7;
+      transition: opacity 0.5s ease;
+      animation: pulsar 2.5s ease infinite;
+    }
+    @keyframes pulsar { 0%,100%{opacity:0.4;} 50%{opacity:0.9;} }
+    .envelope {
+      width: min(440px, 90vw);
+      cursor: pointer;
+      position: relative;
+      filter: drop-shadow(0 30px 60px rgba(0,0,0,0.5)) drop-shadow(0 0 40px rgba(196,77,255,0.2));
+      transition: transform 0.4s ease, filter 0.4s ease, opacity 0.6s ease;
+    }
+    .envelope:hover {
+      transform: translateY(-10px) rotate(1deg);
+      filter: drop-shadow(0 40px 80px rgba(0,0,0,0.5)) drop-shadow(0 0 60px rgba(196,77,255,0.4));
+    }
+    .env-svg { width: 100%; }
+    .env-sello {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -15%);
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--lila-2), var(--lila-3));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.1rem;
+      box-shadow: 0 0 0 4px rgba(196,77,255,0.2), 0 8px 25px rgba(0,0,0,0.4);
+      animation: latido 1.6s ease-in-out infinite;
+      z-index: 5;
+    }
+    @keyframes latido {
+      0%,100%{transform:translate(-50%,-15%) scale(1);}
+      14%{transform:translate(-50%,-15%) scale(1.13);}
+      28%{transform:translate(-50%,-15%) scale(1);}
+      42%{transform:translate(-50%,-15%) scale(1.07);}
+    }
+    .env-nombre {
+      position: absolute;
+      bottom: 18%; left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .env-nombre-para {
+      font-family: 'Lora', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: #7c4a9e;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+    .env-nombre-texto {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.1rem;
+      color: #4e1d7a;
+      line-height: 1;
+    }
+
+    /* ===== PANTALLA 3: CARTA ===== */
+    #screen-letter {
+      position: fixed;
+      inset: 0;
+      z-index: 8;
+      overflow-y: auto;
+      overflow-x: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease;
+      padding: 2rem 1rem 5rem;
+    }
+    #screen-letter.active { opacity:1; pointer-events:all; }
+    .letter-wrap {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .letter-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .letter-header-tag {
+      display: inline-block;
+      font-family: 'Cinzel', serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.38em;
+      color: var(--violeta-neon);
+      text-transform: uppercase;
+      background: rgba(196,77,255,0.1);
+      border: 1px solid rgba(196,77,255,0.25);
+      padding: 0.35rem 1.1rem;
+      border-radius: 50px;
+      margin-bottom: 0.8rem;
+    }
+    .letter-header-date {
+      font-family: 'Lora', serif;
+      font-size: 0.82rem;
+      color: var(--dorado);
+      letter-spacing: 0.2em;
+    }
+    .letter-paper {
+      background: linear-gradient(170deg, #fdfaf4 0%, #fdf6e9 60%, #f9f0db 100%);
+      border-radius: 3px;
+      position: relative;
+      box-shadow:
+        0 50px 100px rgba(0,0,0,0.45),
+        0 20px 50px rgba(74,29,122,0.3);
+      overflow: hidden;
+    }
+    .letter-paper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(transparent 38px, rgba(180,130,220,0.08) 38px, rgba(180,130,220,0.08) 39px);
+      background-size: 100% 39px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .letter-paper::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 4rem;
+      width: 1px;
+      height: 100%;
+      background: rgba(212,96,138,0.15);
+      z-index: 0;
+    }
+    .letter-inner {
+      padding: clamp(2.5rem,6vw,4.5rem) clamp(2rem,7vw,5rem);
+      position: relative;
+      z-index: 1;
+    }
+    .letter-top-band {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--lila-3), var(--rosa), var(--dorado), var(--rosa), var(--lila-3));
+      background-size: 200% 100%;
+      animation: bandMove 4s linear infinite;
+    }
+    @keyframes bandMove { 0%{background-position:0% 0%;} 100%{background-position:200% 0%;} }
+    .letter-stamp {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      width: 55px; height: 55px;
+      border: 2px solid rgba(124,63,168,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      transform: rotate(8deg);
+    }
+    .letter-stamp::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border: 1px dashed rgba(124,63,168,0.2);
+    }
+    .letter-greeting {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--lila-2);
+      margin-bottom: 2rem;
+      line-height: 1.2;
+    }
+    .letter-body {
+      font-family: 'Lora', serif;
+      font-size: clamp(1rem, 2.2vw, 1.13rem);
+      font-weight: 300;
+      color: #2a1540;
+      line-height: 2.2;
+    }
+    .letter-body p {
+      margin-bottom: 1.6rem;
+      text-indent: 2em;
+    }
+    .letter-body p:first-child { text-indent: 0; }
+    .it { font-style: italic; color: var(--lila-3); }
+    .bold { font-weight: 400; color: var(--lila-2); }
+    .grande { font-family: 'Playfair Display', serif; font-size: 1.12em; font-style: italic; }
+    .sep {
+      text-align: center;
+      margin: 2rem 0;
+      color: var(--rosa);
+      opacity: 0.5;
+      font-size: 1.1rem;
+      letter-spacing: 0.6em;
+    }
+    .letter-highlight {
+      margin: 2.5rem 0;
+      padding: 1.5rem 2rem;
+      border-left: 3px solid var(--lila-4);
+      background: linear-gradient(90deg, rgba(180,130,220,0.08) 0%, transparent 100%);
+      border-radius: 0 4px 4px 0;
+    }
+    .letter-highlight p {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(0.95rem, 2.3vw, 1.12rem);
+      font-style: italic;
+      color: var(--lila-2);
+      line-height: 1.9;
+      text-indent: 0 !important;
+      margin: 0;
+    }
+    .letter-firma {
+      margin-top: 3rem;
+      text-align: right;
+    }
+    .letter-firma-pre {
+      font-family: 'Lora', serif;
+      font-size: 0.85rem;
+      color: var(--rosa);
+      letter-spacing: 0.15em;
+      font-style: italic;
+      margin-bottom: 0.4rem;
+    }
+    .letter-firma-nombre {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.2rem;
+      color: var(--lila-2);
+    }
+    .letter-footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(180,130,220,0.2);
+    }
+    .letter-footer-icons {
+      font-size: 1.6rem;
+      letter-spacing: 0.5rem;
+      animation: latido2 2s ease-in-out infinite;
+    }
+    @keyframes latido2 { 0%,100%{transform:scale(1);} 50%{transform:scale(1.1);} }
+    .photo-zone {
+      margin: 2.5rem 0;
+      border: 2px dashed rgba(180,130,220,0.3);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+    .photo-zone:hover { border-color: rgba(196,77,255,0.5); background: rgba(196,77,255,0.04); }
+    .photo-zone input { display: none; }
+    .pz-label {
+      font-family: 'Lora', serif;
+      font-size: 0.9rem;
+      font-style: italic;
+      color: var(--lila-4);
+      opacity: 0.8;
+    }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    .photo-item { aspect-ratio:1; border-radius:4px; overflow:hidden; box-shadow:0 6px 20px rgba(0,0,0,0.15); }
+    .photo-item img { width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease; }
+    .photo-item:hover img { transform:scale(1.06); }
+
+    #btn-back {
+      position: fixed;
+      bottom: 2rem; left: 2rem;
+      z-index: 100;
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--lila-5);
+      background: rgba(46,13,78,0.7);
+      border: 1px solid rgba(180,130,220,0.25);
+      padding: 0.65rem 1.4rem;
+      border-radius: 50px;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #btn-back.show { opacity:1; pointer-events:all; }
+    #btn-back:hover { background:rgba(78,29,122,0.85); transform:translateX(-3px); }
+
+    .heart-burst {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      animation: burstFly 2s ease-out forwards;
+    }
+    @keyframes burstFly {
+      0%  { opacity:1; transform:translate(0,0) scale(1); }
+      100%{ opacity:0; transform:translate(var(--dx),var(--dy)) scale(0.4) rotate(var(--rot)); }
+    }
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--lila-1); }
+    ::-webkit-scrollbar-thumb { background:var(--lila-3); border-radius:3px; }
+
+    /* ===== POLAROIDS ===== */
+    .polaroid-section {
+      margin: 3rem -1rem 2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .polaroid-titulo {
+      font-family: 'Lora', serif;
+      font-size: 0.78rem;
+      font-style: italic;
+      letter-spacing: 0.25em;
+      color: var(--rosa);
+      opacity: 0.6;
+      text-align: center;
+      margin-bottom: 2.5rem;
+      text-indent: 0 !important;
+    }
+
+    .polaroid-pile {
+      position: relative;
+      width: 100%;
+      /* altura dinámica generada por JS */
+      min-height: 420px;
+    }
+
+    .polaroid {
+      position: absolute;
+      background: #fff;
+      padding: 10px 10px 36px 10px;
+      box-shadow:
+        0 6px 20px rgba(0,0,0,0.18),
+        0 2px 6px rgba(0,0,0,0.12),
+        inset 0 0 0 1px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.35s ease, z-index 0s;
+      user-select: none;
+      will-change: transform;
+    }
+
+    .polaroid:hover {
+      box-shadow:
+        0 20px 50px rgba(0,0,0,0.28),
+        0 8px 20px rgba(74,29,122,0.2);
+      z-index: 50 !important;
+    }
+
+    .polaroid img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      border: none;
+    }
+
+    .polaroid-caption {
+      position: absolute;
+      bottom: 6px;
+      left: 0; right: 0;
+      text-align: center;
+      font-family: 'Great Vibes', cursive;
+      font-size: 1rem;
+      color: #888;
+      pointer-events: none;
+    }
+
+    /* Lightbox */
+    #lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(20,5,40,0.92);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    #lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    #lightbox img {
+      max-width: min(90vw, 680px);
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 2px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      transform: scale(0.9);
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    #lightbox.open img {
+      transform: scale(1);
+    }
+
+    #lightbox-close {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      font-size: 1.8rem;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+      background: none;
+      border: none;
+      line-height: 1;
+    }
+    #lightbox-close:hover { color: #fff; transform: rotate(90deg); }
+
+    @media (max-width:480px){
+      .letter-paper::after{left:2.8rem;}
+      .letter-inner{padding:2rem 1.5rem;}
+      .letter-body p{text-indent:1.2em;}
+      .polaroid-pile { min-height: 320px; }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas-bg"></canvas>
+
+<!-- PANTALLA 1: BIENVENIDA -->
+<div id="screen-welcome">
+  <div class="welcome-band"></div>
+  <div class="orbe orbe-1"></div>
+  <div class="orbe orbe-2"></div>
+  <span class="corner-deco tl">🌸</span>
+  <span class="corner-deco tr">💜</span>
+  <span class="corner-deco bl">✿</span>
+  <span class="corner-deco br">🌷</span>
+
+  <div class="welcome-badge">
+    <div class="badge-dot"></div>
+    8 de Marzo &nbsp;·&nbsp; Día Internacional de la Mujer
+  </div>
+
+  <p class="welcome-fecha">✦ &nbsp; Un mensaje especial para ti &nbsp; ✦</p>
+
+  <h1 class="welcome-titulo">
+    Hoy el mundo celebra<br>
+    <em>a las mujeres</em>
+  </h1>
+
+  <p class="welcome-nombre">Ana María</p>
+
+  <p class="welcome-subtitulo">y yo celebro que tú seas parte de mi mundo.</p>
+
+  <div class="linea-deco"><span>💜</span></div>
+
+  <button class="btn-abrir" onclick="goToEnvelope()">Ver mi mensaje ✦</button>
+</div>
+
+<!-- PANTALLA 2: SOBRE -->
+<div id="screen-envelope">
+  <p class="env-label" id="envLabel">✦ &nbsp; Toca el sobre para abrir &nbsp; ✦</p>
+
+  <div class="envelope" id="envelope" onclick="openLetter()">
+    <svg class="env-svg" viewBox="0 0 440 290" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="envG" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f5e6c8"/>
+          <stop offset="100%" style="stop-color:#eeddc0"/>
+        </linearGradient>
+        <linearGradient id="solapaG" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#dccba0"/>
+          <stop offset="100%" style="stop-color:#c9b480"/>
+        </linearGradient>
+      </defs>
+      <rect x="0" y="0" width="440" height="290" rx="6" fill="url(#envG)"/>
+      <polygon points="0,0 440,0 220,160" fill="url(#solapaG)" opacity="0.9"/>
+      <line x1="0" y1="290" x2="220" y2="148" stroke="#d4b88a" stroke-width="1" opacity="0.45"/>
+      <line x1="440" y1="290" x2="220" y2="148" stroke="#d4b88a" stroke-width="1" opacity="0.45"/>
+      <rect x="2" y="2" width="436" height="286" rx="5" fill="none" stroke="#e2c97e" stroke-width="1" opacity="0.3"/>
+      <text x="18" y="30" font-size="20" opacity="0.2">🌸</text>
+      <text x="400" y="30" font-size="20" opacity="0.2">🌸</text>
+      <text x="18" y="278" font-size="20" opacity="0.2">🌷</text>
+      <text x="400" y="278" font-size="20" opacity="0.2">🌷</text>
+    </svg>
+    <div class="env-sello">💌</div>
+    <div class="env-nombre">
+      <p class="env-nombre-para">Para</p>
+      <p class="env-nombre-texto">Ana María</p>
+    </div>
+  </div>
+</div>
+
+<!-- PANTALLA 3: CARTA -->
+<div id="screen-letter">
+  <div class="letter-wrap">
+    <div class="letter-header">
+      <span class="letter-header-tag">💜 Día Internacional de la Mujer · 8 de Marzo</span>
+      <p class="letter-header-date">✦ &nbsp; Hoy y siempre, para ti &nbsp; ✦</p>
+    </div>
+
+    <div class="letter-paper">
+      <div class="letter-top-band"></div>
+      <div class="letter-stamp">🌸</div>
+      <div class="letter-inner">
+
+        <p class="letter-greeting">Mi querida Ana María,</p>
+
+        <div class="letter-body">
+          <p>
+            Hoy el mundo tiene un motivo especial para detenerse y reconocer a las mujeres extraordinarias que lo hacen girar. Y yo, desde este pequeño rincón del universo que compartimos, quiero que sepas que <span class="it">tú eres una de esas mujeres.</span> De las que dejan huella. De las que inspiran sin darse cuenta.
+          </p>
+
+          <div class="sep">· · · 💜 · · ·</div>
+
+          <p>
+            Nos conocemos hace casi diez años, Ana María. La vida nos cruzó, nos unió por un tiempo, y luego — como a veces pasa — nos alejó. Cada uno siguió su camino, el tiempo corrió, y sin embargo algo quedó guardado, sin nombre, sin prisa. <span class="it">Nueve años después, el universo decidió que era hora.</span> Y nos volvimos a encontrar.
+          </p>
+
+          <p>
+            Ese reencuentro me enseñó algo: que hay personas que no llegan por casualidad ni se van para siempre. Que ciertas historias necesitan tiempo para estar listas. Y la nuestra estaba esperando el momento exacto. En estos meses he podido ver de cerca la mujer en que te convertiste: <span class="bold">valiente, real, profunda.</span> Una mujer que cuando la vida se pone difícil no se dobla, se fortalece. Que enfrenta sus tormentas con una dignidad que solo tienen las almas verdaderamente grandes.
+          </p>
+
+          <p>
+            He visto cómo cargas tus batallas sin pedirle permiso al miedo. He visto cómo te paras de nuevo cuando algo te tumba. Y cada vez que lo haces, pienso: <span class="it grande">"qué mujer tan increíble."</span>
+          </p>
+
+          <div class="letter-highlight">
+            <p>
+              "No hay nada más poderoso que una mujer que sabe quién es,<br>
+              que ama con autenticidad y que camina sin disculparse<br>
+              por la luz que lleva dentro."<br>
+              <span style="font-size:0.85em;opacity:0.7;">— Y tú, Ana María, eres exactamente eso.</span>
+            </p>
+          </div>
+
+          <div class="sep">· · · 🌸 · · ·</div>
+
+          <p>
+            Hoy, en este 8 de marzo, quiero celebrarte a ti. No solo como la mujer que el mundo debería ver, sino como la mujer que <span class="bold">yo tengo el privilegio de ver de cerca.</span> La que me habla, la que ríe, la que siente. La de cabello hermoso que enmarca un rostro que parece diseñado para ser admirado. La de esos ojos que dicen cosas que ninguna palabra alcanza a describir. La de esa presencia cálida y esa belleza que no necesita esfuerzo porque simplemente <span class="it">es.</span>
+          </p>
+
+          <p>
+            Llevamos un mes construyendo algo bonito, y aunque el tiempo es corto, lo que siento no lo es. El <span class="bold">26 de este mes</span> cumplimos dos meses, y quiero que llegues a esa fecha sabiendo que eres la razón por la que algunos días se sienten distintos, más ligeros, <span class="it">más llenos de sentido.</span>
+          </p>
+
+          <div class="sep">· · · ✨ · · ·</div>
+
+          <p>
+            Así que hoy, en el Día de la Mujer, mi homenaje va para ti: por ser fuerte cuando es difícil serlo, por ser hermosa sin buscarlo, por ser genuina en un mundo que premia la pose. Por ser, en definitiva, <span class="grande it">la mujer que eres.</span>
+          </p>
+
+          <p>
+            Gracias por existir. Gracias por estar. Gracias por dejarme ser parte de tu historia. <span class="bold">Quiero todo a tu lado, Ana María.</span>
+          </p>
+
+          <!-- Sección de fotos Polaroid -->
+          <div class="polaroid-section">
+            <p class="polaroid-titulo">· nuestros momentos ·</p>
+            <div class="polaroid-pile" id="polaroidPile"></div>
+          </div>
+        </div>
+
+        <div class="letter-firma">
+          <p class="letter-firma-pre">Con todo el amor del mundo,</p>
+          <p class="letter-firma-nombre">Tu amor 💜</p>
+        </div>
+
+        <div class="letter-footer">
+          <div class="letter-footer-icons">💜 🌸 💜</div>
+          <p style="font-family:'Lora',serif;font-size:0.78rem;color:var(--lila-4);opacity:0.5;margin-top:0.8rem;font-style:italic;">
+            Feliz Día de la Mujer, Ana María · 8 de Marzo
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="btn-back" onclick="goBack()">← Volver</button>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<script>
+  // ===== CANVAS PARTÍCULAS =====
+  const canvas = document.getElementById('canvas-bg');
+  const ctx = canvas.getContext('2d');
+  let W = canvas.width = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; });
+
+  class Particle {
+    constructor() { this.reset(true); }
+    reset(init) {
+      this.x = Math.random() * W;
+      this.y = init ? Math.random() * H : H + 10;
+      this.r = Math.random() * 3.5 + 1;
+      this.vy = -(Math.random() * 0.7 + 0.25);
+      this.vx = (Math.random() - 0.5) * 0.35;
+      this.life = 0;
+      this.maxLife = Math.random() * 280 + 180;
+      this.maxAlpha = Math.random() * 0.45 + 0.08;
+      this.alpha = init ? Math.random() * this.maxAlpha : 0;
+      const hues = [275,295,320,255,45];
+      this.hue = hues[Math.floor(Math.random()*hues.length)];
+    }
+    update() {
+      this.life++;
+      this.x += this.vx; this.y += this.vy;
+      if (this.life < 50) this.alpha = this.maxAlpha * (this.life/50);
+      else if (this.life > this.maxLife - 50) this.alpha = this.maxAlpha * ((this.maxLife-this.life)/50);
+      else this.alpha = this.maxAlpha;
+      if (this.life >= this.maxLife) this.reset(false);
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha;
+      ctx.fillStyle = `hsl(${this.hue},70%,65%)`;
+      ctx.beginPath(); ctx.arc(this.x,this.y,this.r,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  const particles = Array.from({length:90}, () => new Particle());
+
+  (function loop() {
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  })();
+
+  // ===== FLUJO =====
+  let stage = 0;
+
+  function goToEnvelope() {
+    document.getElementById('screen-welcome').classList.add('exit');
+    setTimeout(() => {
+      document.getElementById('screen-envelope').classList.add('active');
+      stage = 1;
+    }, 700);
+  }
+
+  function openLetter() {
+    if (stage !== 1) return;
+    stage = 2;
+    const env = document.getElementById('envelope');
+    const lbl = document.getElementById('envLabel');
+    burstHearts(env, false);
+    env.style.transform = 'scale(1.04) rotate(-2deg)';
+    setTimeout(() => {
+      env.style.opacity = '0';
+      env.style.transform = 'scale(0.82) translateY(-40px)';
+      lbl.style.opacity = '0';
+    }, 320);
+    setTimeout(() => {
+      document.getElementById('screen-envelope').classList.remove('active');
+      document.getElementById('screen-letter').classList.add('active');
+      document.getElementById('btn-back').classList.add('show');
+      document.getElementById('screen-letter').scrollTop = 0;
+      setTimeout(() => burstHearts(null, true), 200);
+      window.__buildPolaroidsOnce();
+    }, 900);
+  }
+
+  function goBack() {
+    document.getElementById('screen-letter').classList.remove('active');
+    document.getElementById('btn-back').classList.remove('show');
+    const env = document.getElementById('envelope');
+    env.style.transition = 'none';
+    env.style.opacity = '1';
+    env.style.transform = '';
+    setTimeout(() => { env.style.transition = ''; }, 50);
+    document.getElementById('envLabel').style.opacity = '';
+    setTimeout(() => {
+      document.getElementById('screen-envelope').classList.add('active');
+      stage = 1;
+    }, 400);
+  }
+
+  function burstHearts(origin, center) {
+    const syms = ['💜','🌸','✨','💫','🌷','✦','🩷'];
+    const n = center ? 20 : 12;
+    const bx = center ? W/2 : (origin ? origin.getBoundingClientRect().left + origin.offsetWidth/2 : W/2);
+    const by = center ? H/2 : (origin ? origin.getBoundingClientRect().top + origin.offsetHeight/2 : H/2);
+    for (let i = 0; i < n; i++) {
+      setTimeout(() => {
+        const el = document.createElement('div');
+        el.className = 'heart-burst';
+        el.textContent = syms[Math.floor(Math.random()*syms.length)];
+        el.style.left = bx + 'px';
+        el.style.top = by + 'px';
+        const angle = (Math.PI*2*i/n) + Math.random()*0.6;
+        const dist = 80 + Math.random()*220;
+        el.style.setProperty('--dx', Math.cos(angle)*dist + 'px');
+        el.style.setProperty('--dy', Math.sin(angle)*dist - 80 + 'px');
+        el.style.setProperty('--rot', (Math.random()*60-30) + 'deg');
+        el.style.fontSize = (1 + Math.random()*1.3) + 'rem';
+        el.style.animationDuration = (1.4 + Math.random()*0.9) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+      }, i * 70);
+    }
+  }
+
+  function loadPhotos(e) {
+    const grid = document.getElementById('photoGrid');
+    Array.from(e.target.files).forEach(f => {
+      if (!f.type.startsWith('image/')) return;
+      const r = new FileReader();
+      r.onload = ev => {
+        const item = document.createElement('div');
+        item.className = 'photo-item';
+        const img = document.createElement('img');
+        img.src = ev.target.result;
+        img.alt = 'Nuestra foto 💜';
+        item.appendChild(img);
+        grid.appendChild(item);
+      };
+      r.readAsDataURL(f);
+    });
+    document.getElementById('pzLabel').textContent = '💜 ¡Nuestras fotos! Toca para agregar más';
+  }
+
+  // ===== POLAROIDS =====
+  const fotos = [
+    { src: 'fotos/foto1.jpg', caption: '💜' },
+    { src: 'fotos/foto2.jpg', caption: '🌸' },
+    { src: 'fotos/foto3.jpg', caption: '✨' },
+    { src: 'fotos/foto4.jpg', caption: '💜' },
+    { src: 'fotos/foto5.jpg', caption: '🌷' },
+    { src: 'fotos/foto6.jpg', caption: '💫' },
+    { src: 'fotos/foto7.jpg', caption: '💜' },
+    { src: 'fotos/foto8.jpg', caption: '🌸' },
+    { src: 'fotos/foto9.jpg', caption: '✨' },
+  ];
+
+  // Rotaciones y posiciones fijas para que siempre se vean bien dispersas
+  const layout = [
+    { x: 2,   y: 0,   rot: -6,  w: 44, zIndex: 3 },
+    { x: 38,  y: 15,  rot: 4,   w: 42, zIndex: 6 },
+    { x: 10,  y: 44,  rot: 8,   w: 40, zIndex: 2 },
+    { x: 48,  y: 55,  rot: -5,  w: 45, zIndex: 7 },
+    { x: 5,   y: 85,  rot: 3,   w: 43, zIndex: 4 },
+    { x: 42,  y: 100, rot: -9,  w: 41, zIndex: 8 },
+    { x: 8,   y: 130, rot: 6,   w: 44, zIndex: 1 },
+    { x: 44,  y: 145, rot: -4,  w: 42, zIndex: 5 },
+    { x: 18,  y: 175, rot: 7,   w: 46, zIndex: 9 },
+  ];
+
+  function buildPolaroids() {
+    const pile = document.getElementById('polaroidPile');
+    if (!pile) return;
+
+    const containerW = pile.parentElement.offsetWidth || 300;
+    let maxBottom = 0;
+
+    fotos.forEach((f, i) => {
+      const cfg = layout[i];
+      const pw = Math.round(containerW * cfg.w / 100); // ancho en px
+      const ph = pw; // foto cuadrada
+      const captionH = 36;
+      const pad = 10;
+      const totalH = ph + pad * 2 + captionH;
+
+      const px = Math.round(containerW * cfg.x / 100);
+      const py = Math.round(cfg.y * 2.2); // espaciado vertical
+
+      const div = document.createElement('div');
+      div.className = 'polaroid';
+      div.style.cssText = `
+        left: ${px}px;
+        top: ${py}px;
+        width: ${pw}px;
+        height: ${totalH}px;
+        transform: rotate(${cfg.rot}deg);
+        z-index: ${cfg.zIndex};
+      `;
+
+      const img = document.createElement('img');
+      img.src = f.src;
+      img.alt = 'foto 💜';
+      img.style.width = '100%';
+      img.style.height = ph + 'px';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+
+      const cap = document.createElement('div');
+      cap.className = 'polaroid-caption';
+      cap.textContent = f.caption;
+
+      div.appendChild(img);
+      div.appendChild(cap);
+
+      // Hover: levantar la foto
+      div.addEventListener('mouseenter', () => {
+        div.style.transform = `rotate(${cfg.rot * 0.3}deg) scale(1.08) translateY(-8px)`;
+      });
+      div.addEventListener('mouseleave', () => {
+        div.style.transform = `rotate(${cfg.rot}deg)`;
+      });
+
+      // Click: abrir lightbox
+      div.addEventListener('click', () => openLightbox(f.src));
+
+      pile.appendChild(div);
+
+      const bottom = py + totalH;
+      if (bottom > maxBottom) maxBottom = bottom;
+    });
+
+    pile.style.height = (maxBottom + 20) + 'px';
+  }
+
+  function openLightbox(src) {
+    const lb = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    img.src = src;
+    lb.classList.add('open');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  // Construir polaroids cuando se abre la carta
+  const _origOpenLetter = openLetter;
+  let polaroidsBuilt = false;
+  const origOpenLetter = openLetter;
+
+  // Reconstruir al abrir carta
+  document.addEventListener('DOMContentLoaded', () => {
+    // también construir si ya está visible
+  });
+
+  // Parchear openLetter para construir polaroids la primera vez
+  window.__buildPolaroidsOnce = function() {
+    if (!polaroidsBuilt) {
+      buildPolaroids();
+      polaroidsBuilt = true;
+    }
+  };
+</script>
+</body>
+</html>
